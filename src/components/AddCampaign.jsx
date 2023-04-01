@@ -9,7 +9,7 @@ const AddCampaign = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [goal, setGoal] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [endDate, setEndDate] = useState(new Date());
   const [imageUrl, setImageUrl] = useState();
 
   const { accounts } = useContext(AccountsContext);
