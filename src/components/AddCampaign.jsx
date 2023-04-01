@@ -1,9 +1,7 @@
 import React, { useState, useContext } from "react";
 
 import web3 from "../utils/web3";
-import contract from "../utils/contractAddress";
-
-import CrowdFunding from "../build/contracts/CrowdFunding.json";
+import contractInstance from "../utils/contractInstance";
 
 import AccountsContext from "../context/accounts";
 
@@ -14,7 +12,6 @@ const AddCampaign = () => {
   const [endDate, setEndDate] = useState("");
   const [imageUrl, setImageUrl] = useState();
 
-  const contractInstance = new web3.eth.Contract(CrowdFunding.abi, contract);
   const { accounts } = useContext(AccountsContext);
 
   const handleSubmit = async (e) => {
