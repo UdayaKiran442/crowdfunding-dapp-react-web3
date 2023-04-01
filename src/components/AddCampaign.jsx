@@ -1,14 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+
+import web3 from "../utils/web3";
+import contract from "../utils/contractAddress";
+
+import CrowdFunding from "../build/contracts/CrowdFunding.json";
+
+import AccountsContext from "../context/accounts";
 
 const AddCampaign = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [goal, setGoal] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [imageUrl, setImageUrl] = useState();
 
-  const handleSubmit = (e) => {
+  const contractInstance = new web3.eth.Contract(CrowdFunding.abi, contract);
+  const { accounts } = useContext(AccountsContext);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // handle form submission
+    const txtObj = contractInstance.methods.addCampaigns(
+      title,
+      description,
+      imageUrl,
+      goal,
+      endDate
+    );
+    const gas = await txtObj.estimateGas();
+    const tx = {
+      from: accounts[0],
+      to: contractInstance.options.address,
+      gas: 3000000,
+      data: txtObj.encodeABI(),
+    };
+    const result = await web3.eth.sendTransaction(tx);
+    console.log(result);
   };
 
   return (
@@ -41,6 +67,21 @@ const AddCampaign = () => {
             placeholder="Enter description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+        <div className="mb-4">
+          <label
+            className="block text-gray-700 font-bold mb-2"
+            htmlFor="description"
+          >
+            Image Url
+          </label>
+          <textarea
+            className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="description"
+            placeholder="Enter Image URL"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
           />
         </div>
         <div className="mb-4">
