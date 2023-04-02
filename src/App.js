@@ -5,8 +5,8 @@ import Navbar from "./components/Navbar";
 import AddCampaign from "./components/AddCampaign";
 import AllCampaigns from "./components/AllCampaigns";
 
-import web3 from "./utils/web3";
 import connectToMetamask from "./utils/connect-metamask";
+import getAccounts from "./utils/getAccounts";
 
 import AccountsContext from "./context/accounts";
 
@@ -14,18 +14,9 @@ import "./App.css";
 
 function App() {
   const [accounts, setAccounts] = useState([]);
-  const getAccounts = async () => {
-    try {
-      const accounts = await web3.eth.getAccounts();
-      setAccounts(accounts);
-      console.log("Accounts:", accounts);
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
   useEffect(() => {
     connectToMetamask();
-    getAccounts();
+    getAccounts(setAccounts);
   }, []);
   return (
     <div className="container mx-auto py-4">
