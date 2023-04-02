@@ -1,20 +1,13 @@
 import React, { useEffect, useState } from "react";
+
 import Campaign from "./Campaign";
-import contractInstance from "../utils/contractInstance";
+
+import getCampaigns from "../utils/getCampaings";
 
 const AllCampaigns = () => {
   const [allCampaigns, setAllCampaigns] = useState([]);
-  const getCampaigns = async () => {
-    try {
-      const result = await contractInstance.methods.getCampaigns().call();
-      setAllCampaigns(result);
-      console.log("Campaigns:", result);
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
   useEffect(() => {
-    getCampaigns();
+    getCampaigns(setAllCampaigns);
   }, []);
   return (
     <>
