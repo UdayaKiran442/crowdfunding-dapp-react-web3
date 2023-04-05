@@ -4,6 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import AddCampaign from "./components/AddCampaign";
 import AllCampaigns from "./components/AllCampaigns";
+import UpdateCampaign from "./components/UpdateCampaign";
 
 import connectToMetamask from "./utils/connect-metamask";
 import getAccounts from "./utils/getAccounts";
@@ -25,6 +26,7 @@ function App() {
         <Routes>
           <Route path="/" element={<AllCampaigns />} />
           <Route path="/add" element={<AddCampaign />} />
+          <Route path="/update/:id" element={<UpdateCampaign />} />
         </Routes>
       </AccountsContext.Provider>
     </div>
