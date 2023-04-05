@@ -1,8 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
+import contractInstance from "../utils/contractInstance";
 
 const UpdateCampaign = () => {
   const { id } = useParams();
+  const getCampaignById = async () => {
+    const campaign = await contractInstance.methods
+      .getCampaignDetails(id)
+      .call();
+    console.log("Campaign details:", campaign);
+  };
+  useEffect(() => {
+    getCampaignById();
+  }, []);
   return (
     <div className="container mx-auto py-4">
       <h1 className="text-4xl font-bold mb-4">Update Campaign</h1>
