@@ -16,7 +16,7 @@ import "./App.css";
 function App() {
   const [accounts, setAccounts] = useState([]);
   useEffect(() => {
-    connectToMetamask();
+    // connectToMetamask();
     getAccounts(setAccounts);
   }, []);
   return (

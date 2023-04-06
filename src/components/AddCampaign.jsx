@@ -16,22 +16,19 @@ const AddCampaign = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const txtObj = contractInstance.methods.addCampaigns(
-      title,
-      description,
-      imageUrl,
-      goal,
-      endDate
-    );
-    const gas = await txtObj.estimateGas();
-    const tx = {
-      from: accounts[0],
-      to: contractInstance.options.address,
-      gas: 3000000,
-      data: txtObj.encodeABI(),
-    };
-    const result = await web3.eth.sendTransaction(tx);
-    console.log(result);
+    const gasLimit = await contractInstance.methods
+      .addCampaigns(title, description, imageUrl, goal, endDate)
+      .estimateGas({
+        from: accounts[0],
+      });
+    const txtObj = await contractInstance.methods
+      .addCampaigns(title, description, imageUrl, goal, endDate)
+      .send({
+        from: accounts[0],
+        gas: gasLimit,
+      });
+
+    console.log(txtObj);
   };
 
   return (
