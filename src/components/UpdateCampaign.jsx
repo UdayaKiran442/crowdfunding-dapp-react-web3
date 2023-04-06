@@ -1,8 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+
+import web3 from "../utils/web3";
 import contractInstance from "../utils/contractInstance";
 
+import AccountsContext from "../context/accounts";
+
 const UpdateCampaign = () => {
+  const { accounts } = useContext(AccountsContext);
   const [title, setTitle] = useState();
   const [description, setDescription] = useState();
   const [imageUrl, setImageUrl] = useState();
@@ -20,6 +25,27 @@ const UpdateCampaign = () => {
     setGoal(campaign.target);
     setEndDate(campaign.deadline);
   };
+
+  const handleUpdateCampaign = async (e) => {
+    e.preventDefault();
+    const result = await contractInstance.methods.updateCampaign(
+      id,
+      title,
+      description,
+      imageUrl,
+      goal,
+      endDate
+    );
+    const tx = {
+      from: accounts[0],
+      to: contractInstance.options.address,
+      gas: 3000000,
+      data: result.encodeABI(),
+    };
+    const response = await web3.eth.sendTransaction(tx);
+    console.log(response);
+  };
+
   useEffect(() => {
     getCampaignById();
   }, []);
@@ -99,8 +125,11 @@ const UpdateCampaign = () => {
             onClick={(e) => setEndDate(e.target.value)}
           />
         </div>
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-          Add Campaign
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={handleUpdateCampaign}
+        >
+          Update Campaign
         </button>
       </form>
     </div>
