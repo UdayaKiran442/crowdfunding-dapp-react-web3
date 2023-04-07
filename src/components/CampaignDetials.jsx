@@ -1,19 +1,33 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 
-const CampaignDetails = ({ campaign }) => {
+import contractInstance from "../utils/contractInstance";
+
+const CampaignDetails = () => {
+  const [campaign, setCampaign] = useState();
+  const { id } = useParams();
+  const getCampaignById = async () => {
+    const campaign = await contractInstance.methods
+      .getCampaignDetails(id)
+      .call();
+    console.log("Campaign details:", campaign);
+    setCampaign(campaign);
+  };
+  useEffect(() => {
+    getCampaignById();
+  }, []);
   return (
     <div className="container mx-auto py-4">
-      <h1 className="text-4xl font-bold mb-4">{campaign.title}</h1>
-      <p className="text-gray-700 mb-4">{campaign.description}</p>
+      <h1 className="text-4xl font-bold mb-4">{campaign?.title}</h1>
+      <p className="text-gray-700 mb-4"></p>
       <p className="text-gray-700 mb-2">
-        <strong>Goal:</strong> ${campaign.goal.toLocaleString()}
+        <strong>Goal:{campaign?.target}</strong>
       </p>
       <p className="text-gray-700 mb-2">
-        <strong>Current amount:</strong> $
-        {campaign.currentAmount.toLocaleString()}
+        <strong>Current amount:{campaign?.received}</strong>
       </p>
       <p className="text-gray-700 mb-2">
-        <strong>End date:</strong> {campaign.endDate}
+        <strong>End date: {campaign?.deadline} </strong>
       </p>
       <form className="mb-4">
         <div className="mb-4">

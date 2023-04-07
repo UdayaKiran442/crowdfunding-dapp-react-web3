@@ -5,6 +5,7 @@ import web3 from "../utils/web3";
 import contractInstance from "../utils/contractInstance";
 
 import AccountsContext from "../context/accounts";
+import getCampaignById from "../utils/getCampaignById";
 
 const UpdateCampaign = () => {
   const { accounts } = useContext(AccountsContext);
@@ -14,18 +15,14 @@ const UpdateCampaign = () => {
   const [goal, setGoal] = useState();
   const [endDate, setEndDate] = useState();
   const { id } = useParams();
-  const getCampaignById = async () => {
-    const campaign = await contractInstance.methods
-      .getCampaignDetails(id)
-      .call();
-    console.log("Campaign details:", campaign);
+  const getDetails = async () => {
+    const campaign = await getCampaignById(id);
     setTitle(campaign.title);
     setDescription(campaign.description);
     setImageUrl(campaign.imageUrl);
     setGoal(campaign.target);
     setEndDate(campaign.deadline);
   };
-
   const handleUpdateCampaign = async (e) => {
     e.preventDefault();
     const result = await contractInstance.methods.updateCampaign(
@@ -47,7 +44,7 @@ const UpdateCampaign = () => {
   };
 
   useEffect(() => {
-    getCampaignById();
+    getDetails();
   }, []);
   return (
     <div className="container mx-auto py-4">

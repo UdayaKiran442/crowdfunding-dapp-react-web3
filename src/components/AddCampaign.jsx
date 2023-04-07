@@ -1,6 +1,5 @@
 import React, { useState, useContext } from "react";
 
-import web3 from "../utils/web3";
 import contractInstance from "../utils/contractInstance";
 
 import AccountsContext from "../context/accounts";
