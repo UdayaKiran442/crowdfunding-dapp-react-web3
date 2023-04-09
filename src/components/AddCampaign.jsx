@@ -15,19 +15,40 @@ const AddCampaign = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const gasLimit = await contractInstance.methods
-      .addCampaigns(title, description, imageUrl, goal, endDate)
-      .estimateGas({
-        from: accounts[0],
-      });
-    const txtObj = await contractInstance.methods
-      .addCampaigns(title, description, imageUrl, goal, endDate)
-      .send({
-        from: accounts[0],
-        gas: gasLimit,
-      });
 
-    console.log(txtObj);
+    try {
+      // const txtObj = await contractInstance.methods
+      //   .addCampaigns(title, description, imageUrl, goal, endDate)
+      //   .send({
+      //     from: accounts[0],
+      //     gas: 3000000,
+      //   });
+      const gasLimit = await contractInstance.methods
+        .addCampaigns(title, description, imageUrl, goal, endDate)
+        .estimateGas({
+          from: accounts[0],
+        });
+      const txtObj = await contractInstance.methods
+        .addCampaigns(title, description, imageUrl, goal, endDate)
+        .send({
+          from: accounts[0],
+          gas: gasLimit + 10000,
+        });
+      console.log(txtObj);
+    } catch (error) {
+      console.log("Error while adding a campaign:", error);
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(file);
+    fileReader.onload = () => {
+      if (fileReader.readyState === 2) {
+        setImageUrl(fileReader.result);
+      }
+    };
   };
 
   return (
@@ -69,13 +90,14 @@ const AddCampaign = () => {
           >
             Image Url
           </label>
-          <textarea
+          {/* <textarea
             className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="description"
             placeholder="Enter Image URL"
             value={imageUrl}
             onChange={(e) => setImageUrl(e.target.value)}
-          />
+          /> */}
+          <input type="file" accept="image/*" onChange={handleImageChange} />
         </div>
         <div className="mb-4">
           <label className="block text-gray-700 font-bold mb-2" htmlFor="goal">
