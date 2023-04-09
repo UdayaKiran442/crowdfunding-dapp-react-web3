@@ -3,9 +3,11 @@ import moment from "moment";
 import AccountsContext from "../context/accounts";
 import { BsPencilFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
+import { weiToEther } from "../utils/ether-wei";
 
 const Campaign = ({ campaign }) => {
   const [remainingDays, setRemainingDays] = useState();
+  const [goalInEther, setGoalInEther] = useState();
   const { accounts } = useContext(AccountsContext);
   const calculateDaysLeft = async () => {
     const currentDate = moment(new Date());
@@ -14,8 +16,13 @@ const Campaign = ({ campaign }) => {
     console.log("Days left:", daysLeft);
     setRemainingDays(daysLeft);
   };
+  const targetInEther = () => {
+    const ether = weiToEther(campaign.target);
+    setGoalInEther(ether);
+  };
   useEffect(() => {
     calculateDaysLeft();
+    targetInEther();
   }, []);
   return (
     <div className="border rounded-lg p-4">
@@ -29,7 +36,7 @@ const Campaign = ({ campaign }) => {
       </div>
       <p className="text-gray-700 mb-4">{campaign.description}</p>
       <p className="text-gray-700 mb-2">
-        <strong>Goal:</strong> ${campaign.target}
+        <strong>Goal:</strong> {goalInEther}eth
       </p>
       <p className="text-gray-700 mb-2">
         <strong>Current amount:</strong> ${campaign.received}

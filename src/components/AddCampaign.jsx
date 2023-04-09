@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 
 import contractInstance from "../utils/contractInstance";
+import { etherToWei } from "../utils/ether-wei";
 
 import AccountsContext from "../context/accounts";
 
@@ -23,13 +24,15 @@ const AddCampaign = () => {
       //     from: accounts[0],
       //     gas: 3000000,
       //   });
+      const goalInWei = etherToWei(goal);
+      console.log("Goal in wei:", goalInWei);
       const gasLimit = await contractInstance.methods
-        .addCampaigns(title, description, imageUrl, goal, endDate)
+        .addCampaigns(title, description, imageUrl, goalInWei, endDate)
         .estimateGas({
           from: accounts[0],
         });
       const txtObj = await contractInstance.methods
-        .addCampaigns(title, description, imageUrl, goal, endDate)
+        .addCampaigns(title, description, imageUrl, goalInWei, endDate)
         .send({
           from: accounts[0],
           gas: gasLimit + 10000,
@@ -107,7 +110,7 @@ const AddCampaign = () => {
             className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="goal"
             type="number"
-            placeholder="Enter goal"
+            placeholder="Enter goal in ether"
             value={goal}
             onChange={(e) => setGoal(e.target.value)}
           />

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import contractInstance from "../utils/contractInstance";
+import { weiToEther } from "../utils/ether-wei";
 
 const CampaignDetails = () => {
   const [campaign, setCampaign] = useState();
@@ -10,8 +11,9 @@ const CampaignDetails = () => {
     const campaign = await contractInstance.methods
       .getCampaignDetails(id)
       .call();
+    const targetInWei = weiToEther(campaign?.target);
     console.log("Campaign details:", campaign);
-    setCampaign(campaign);
+    setCampaign({ ...campaign, target: targetInWei });
   };
   useEffect(() => {
     getCampaignById();
@@ -21,7 +23,7 @@ const CampaignDetails = () => {
       <h1 className="text-4xl font-bold mb-4">{campaign?.title}</h1>
       <p className="text-gray-700 mb-4"></p>
       <p className="text-gray-700 mb-2">
-        <strong>Goal:{campaign?.target}</strong>
+        <strong>Goal:{campaign?.target}eth</strong>
       </p>
       <p className="text-gray-700 mb-2">
         <strong>Current amount:{campaign?.received}</strong>
