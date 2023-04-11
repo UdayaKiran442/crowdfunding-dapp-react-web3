@@ -17,8 +17,9 @@ const CampaignDetails = () => {
       .getCampaignDetails(id)
       .call();
     const targetInWei = weiToEther(campaign?.target);
+    const receivedAmount = weiToEther(campaign?.received);
     console.log("Campaign details:", campaign);
-    setCampaign({ ...campaign, target: targetInWei });
+    setCampaign({ ...campaign, target: targetInWei, received: receivedAmount });
   };
 
   const donateCampaign = async () => {
@@ -43,13 +44,14 @@ const CampaignDetails = () => {
       <h1 className="text-4xl font-bold mb-4">{campaign?.title}</h1>
       <p className="text-gray-700 mb-4"></p>
       <p className="text-gray-700 mb-2">
-        <strong>Goal:{campaign?.target}eth</strong>
+        <strong>Goal:</strong>
+        {campaign?.target} Ether
       </p>
       <p className="text-gray-700 mb-2">
-        <strong>Current amount:{campaign?.received}</strong>
+        <strong>Current amount:</strong> {campaign?.received} Ether
       </p>
       <p className="text-gray-700 mb-2">
-        <strong>End date: {campaign?.deadline} </strong>
+        <strong>End date:</strong> {campaign?.deadline}
       </p>
       <form className="mb-4">
         <div className="mb-4">

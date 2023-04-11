@@ -8,6 +8,7 @@ import { weiToEther } from "../utils/ether-wei";
 const Campaign = ({ campaign }) => {
   const [remainingDays, setRemainingDays] = useState();
   const [goalInEther, setGoalInEther] = useState();
+  const [receivedEther, setReceivedEther] = useState();
   const { accounts } = useContext(AccountsContext);
   const calculateDaysLeft = async () => {
     const currentDate = moment(new Date());
@@ -19,6 +20,8 @@ const Campaign = ({ campaign }) => {
   const targetInEther = () => {
     const ether = weiToEther(campaign.target);
     setGoalInEther(ether);
+    const receivedAmount = weiToEther(campaign.received);
+    setReceivedEther(receivedAmount);
   };
   useEffect(() => {
     calculateDaysLeft();
@@ -36,10 +39,11 @@ const Campaign = ({ campaign }) => {
       </div>
       <p className="text-gray-700 mb-4">{campaign.description}</p>
       <p className="text-gray-700 mb-2">
-        <strong>Goal:</strong> {goalInEther}eth
+        <strong>Goal:</strong> {goalInEther} Ether
       </p>
       <p className="text-gray-700 mb-2">
-        <strong>Current amount:</strong> ${campaign.received}
+        <strong>Current amount:</strong>
+        {receivedEther} Ether
       </p>
       <p className="text-gray-700 mb-2">
         <strong>End date:</strong> {campaign.deadline}
