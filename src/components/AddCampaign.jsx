@@ -28,10 +28,12 @@ const AddCampaign = () => {
         goal,
         endDate
       );
+
       const tx = {
         from: accounts[0],
         to: contractInstance.options.address,
-        gas: 6721975,
+        gas: Math.round(8500000 * 1.2),
+        gasPrice: 20000000000,
         data: txtObj.encodeABI(),
       };
       const result = await web3.eth.sendTransaction(tx);

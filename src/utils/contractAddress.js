@@ -1,5 +1,5 @@
 // const contract = "0x3B1d8622CB35eceB5a1a66B673fFA9546A96c1BD";
-const contract = "0xE7BE06ed7b686E3747046Bac03e09822f104e683";
+const contract = "0xfE1670F25D270fb47Cfea3f3537A391a586B7D7a";
 export default contract;
 //0x1ec28224CBA0264C8cc98AC70EDa7896312eB928
 //Updated smart contract 0xAC2938186Ae8061756ea27D72F5E743A9698f762
