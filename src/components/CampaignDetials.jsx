@@ -1,11 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 
 import contractInstance from "../utils/contractInstance";
 import { weiToEther } from "../utils/ether-wei";
 
+import AccountsContext from "../context/accounts";
+import web3 from "../utils/web3";
+
 const CampaignDetails = () => {
   const [campaign, setCampaign] = useState();
+  const [donation, setDonation] = useState();
+  const { accounts } = useContext(AccountsContext);
   const { id } = useParams();
   const getCampaignById = async () => {
     const campaign = await contractInstance.methods
@@ -15,6 +20,21 @@ const CampaignDetails = () => {
     console.log("Campaign details:", campaign);
     setCampaign({ ...campaign, target: targetInWei });
   };
+
+  const donateCampaign = async () => {
+    try {
+      const donateMethod = contractInstance.methods.donateToCampaign(id);
+      console.log("Donate method:", donateMethod);
+      const txtObj = await donateMethod.send({
+        from: accounts[0],
+        value: web3.utils.toWei(donation, "ether"),
+      });
+      console.log(txtObj);
+    } catch (error) {
+      console.log("Error while donating to campaign:", error.message);
+    }
+  };
+
   useEffect(() => {
     getCampaignById();
   }, []);
@@ -43,10 +63,15 @@ const CampaignDetails = () => {
             className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="donationAmount"
             type="number"
-            placeholder="Enter donation amount"
+            placeholder="Enter donation amount in ether"
+            value={donation}
+            onChange={(e) => setDonation(e.target.value)}
           />
         </div>
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        <button
+          onClick={donateCampaign}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
           Donate
         </button>
       </form>
