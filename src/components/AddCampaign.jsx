@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 
 import contractInstance from "../utils/contractInstance";
 import { etherToWei } from "../utils/ether-wei";
+import web3 from "../utils/web3";
 
 import AccountsContext from "../context/accounts";
 
@@ -18,28 +19,25 @@ const AddCampaign = () => {
     e.preventDefault();
 
     try {
-      // const txtObj = await contractInstance.methods
-      //   .addCampaigns(title, description, imageUrl, goal, endDate)
-      //   .send({
-      //     from: accounts[0],
-      //     gas: 3000000,
-      //   });
       const goalInWei = etherToWei(goal);
       console.log("Goal in wei:", goalInWei);
-      const gasLimit = await contractInstance.methods
-        .addCampaigns(title, description, imageUrl, goalInWei, endDate)
-        .estimateGas({
-          from: accounts[0],
-        });
-      const txtObj = await contractInstance.methods
-        .addCampaigns(title, description, imageUrl, goalInWei, endDate)
-        .send({
-          from: accounts[0],
-          gas: gasLimit + 10000,
-        });
-      console.log(txtObj);
+      const txtObj = contractInstance.methods.addCampaigns(
+        title,
+        description,
+        imageUrl,
+        goal,
+        endDate
+      );
+      const tx = {
+        from: accounts[0],
+        to: contractInstance.options.address,
+        gas: 6721975,
+        data: txtObj.encodeABI(),
+      };
+      const result = await web3.eth.sendTransaction(tx);
+      console.log("Result:", result);
     } catch (error) {
-      console.log("Error while adding a campaign:", error);
+      console.log("Error while adding a campaign:", error.message);
     }
   };
 

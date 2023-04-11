@@ -8,6 +8,7 @@ import UpdateCampaign from "./components/UpdateCampaign";
 import CampaignDetails from "./components/CampaignDetials";
 
 import getAccounts from "./utils/getAccounts";
+import connectToMetamask from "./utils/connect-metamask";
 
 import AccountsContext from "./context/accounts";
 
@@ -16,6 +17,7 @@ import "./App.css";
 function App() {
   const [accounts, setAccounts] = useState([]);
   useEffect(() => {
+    connectToMetamask();
     getAccounts(setAccounts);
   }, []);
   return (
