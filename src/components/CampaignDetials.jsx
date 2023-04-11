@@ -3,13 +3,14 @@ import { useParams } from "react-router-dom";
 
 import contractInstance from "../utils/contractInstance";
 import { weiToEther } from "../utils/ether-wei";
+import web3 from "../utils/web3";
 
 import AccountsContext from "../context/accounts";
-import web3 from "../utils/web3";
 
 const CampaignDetails = () => {
   const [campaign, setCampaign] = useState();
   const [donation, setDonation] = useState();
+  const [percentageCompleted, setPercentageCompleted] = useState();
   const { accounts } = useContext(AccountsContext);
   const { id } = useParams();
   const getCampaignById = async () => {
@@ -36,8 +37,15 @@ const CampaignDetails = () => {
     }
   };
 
+  const percentageAmountReceived = () => {
+    const percentage = (campaign?.received / campaign?.target) * 100;
+    console.log("Percentage completed:", percentage);
+    setPercentageCompleted(percentage);
+  };
+
   useEffect(() => {
     getCampaignById();
+    percentageAmountReceived();
   }, []);
   return (
     <div className="container mx-auto py-4">
@@ -53,6 +61,11 @@ const CampaignDetails = () => {
       <p className="text-gray-700 mb-2">
         <strong>End date:</strong> {campaign?.deadline}
       </p>
+      <div className="w-80 h-4 border-2 border-solid rounded-lg">
+        <div
+          className={`rounded-lg w-[${percentageCompleted}%] bg-green-600 height`}
+        ></div>
+      </div>
       <form className="mb-4">
         <div className="mb-4">
           <label
