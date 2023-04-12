@@ -43,6 +43,17 @@ const UpdateCampaign = () => {
     console.log(response);
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(file);
+    fileReader.onload = () => {
+      if (fileReader.readyState === 2) {
+        setImageUrl(fileReader.result);
+      }
+    };
+  };
+
   useEffect(() => {
     getDetails();
   }, []);
@@ -85,13 +96,7 @@ const UpdateCampaign = () => {
           >
             Image Url
           </label>
-          <textarea
-            className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="description"
-            placeholder="Enter Image URL"
-            value={imageUrl}
-            onChange={(e) => setImageUrl(e.target.value)}
-          />
+          <input type="file" accept="image/*" onChange={handleImageChange} />
         </div>
         <div className="mb-4">
           <label className="block text-gray-700 font-bold mb-2" htmlFor="goal">

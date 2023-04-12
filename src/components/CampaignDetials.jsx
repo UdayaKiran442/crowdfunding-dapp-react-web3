@@ -81,6 +81,7 @@ const CampaignDetails = () => {
             placeholder="Enter donation amount in ether"
             value={donation}
             onChange={(e) => setDonation(e.target.value)}
+            required
           />
         </div>
         <button
