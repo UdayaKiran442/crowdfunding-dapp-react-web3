@@ -9,6 +9,7 @@ import CampaignDetails from "./components/CampaignDetials";
 
 import getAccounts from "./utils/getAccounts";
 import connectToMetamask from "./utils/connect-metamask";
+import detectAccountChange from "./utils/detectAccountChange";
 
 import AccountsContext from "./context/accounts";
 
@@ -19,6 +20,7 @@ function App() {
   useEffect(() => {
     connectToMetamask();
     getAccounts(setAccounts);
+    detectAccountChange();
   }, []);
   return (
     <div className="container mx-auto py-4">
