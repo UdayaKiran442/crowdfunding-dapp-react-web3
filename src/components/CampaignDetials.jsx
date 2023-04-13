@@ -11,16 +11,20 @@ const CampaignDetails = () => {
   const [campaign, setCampaign] = useState();
   const [donation, setDonation] = useState();
   const [percentageCompleted, setPercentageCompleted] = useState();
+  const [targetInEther, setTargetInEther] = useState();
+  const [receivedInEther, setReceivedInEther] = useState();
   const { accounts } = useContext(AccountsContext);
   const { id } = useParams();
   const getCampaignById = async () => {
     const campaign = await contractInstance.methods
       .getCampaignDetails(id)
       .call();
-    const targetInWei = weiToEther(campaign?.target);
+    const targetAmount = weiToEther(campaign?.target);
     const receivedAmount = weiToEther(campaign?.received);
+    setTargetInEther(targetAmount);
+    setReceivedInEther(receivedAmount);
+    setCampaign(campaign);
     console.log("Campaign details:", campaign);
-    setCampaign({ ...campaign, target: targetInWei, received: receivedAmount });
   };
 
   const donateCampaign = async () => {
@@ -38,7 +42,9 @@ const CampaignDetails = () => {
   };
 
   const percentageAmountReceived = () => {
-    const percentage = (campaign?.received / campaign?.target) * 100;
+    const percentage = Math.round(
+      (campaign?.received / campaign?.target) * 100
+    );
     console.log("Percentage completed:", percentage);
     setPercentageCompleted(percentage);
   };
@@ -53,10 +59,10 @@ const CampaignDetails = () => {
       <p className="text-gray-700 mb-4"></p>
       <p className="text-gray-700 mb-2">
         <strong>Goal:</strong>
-        {campaign?.target} Ether
+        {targetInEther} Ether
       </p>
       <p className="text-gray-700 mb-2">
-        <strong>Current amount:</strong> {campaign?.received} Ether
+        <strong>Current amount:</strong> {receivedInEther} Ether
       </p>
       <p className="text-gray-700 mb-2">
         <strong>End date:</strong> {campaign?.deadline}
