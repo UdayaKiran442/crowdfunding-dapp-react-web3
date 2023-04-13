@@ -6,6 +6,7 @@ import contractInstance from "../utils/contractInstance";
 
 import AccountsContext from "../context/accounts";
 import getCampaignById from "../utils/getCampaignById";
+import Loader from "./Loader";
 
 const UpdateCampaign = () => {
   const { accounts } = useContext(AccountsContext);
@@ -14,6 +15,7 @@ const UpdateCampaign = () => {
   const [imageUrl, setImageUrl] = useState();
   const [goal, setGoal] = useState();
   const [endDate, setEndDate] = useState();
+  const [loading, setLoading] = useState(false);
   const { id } = useParams();
   const getDetails = async () => {
     const campaign = await getCampaignById(id);
@@ -24,23 +26,30 @@ const UpdateCampaign = () => {
     setEndDate(campaign.deadline);
   };
   const handleUpdateCampaign = async (e) => {
-    e.preventDefault();
-    const result = await contractInstance.methods.updateCampaign(
-      id,
-      title,
-      description,
-      imageUrl,
-      goal,
-      endDate
-    );
-    const tx = {
-      from: accounts[0],
-      to: contractInstance.options.address,
-      gas: 3000000,
-      data: result.encodeABI(),
-    };
-    const response = await web3.eth.sendTransaction(tx);
-    console.log(response);
+    try {
+      e.preventDefault();
+      setLoading(true);
+      const result = await contractInstance.methods.updateCampaign(
+        id,
+        title,
+        description,
+        imageUrl,
+        goal,
+        endDate
+      );
+      const tx = {
+        from: accounts[0],
+        to: contractInstance.options.address,
+        gas: 3000000,
+        data: result.encodeABI(),
+      };
+      const response = await web3.eth.sendTransaction(tx);
+      console.log(response);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log(error.message);
+    }
   };
 
   const handleImageChange = (e) => {
@@ -130,8 +139,9 @@ const UpdateCampaign = () => {
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           onClick={handleUpdateCampaign}
+          disabled={loading ? true : false}
         >
-          Update Campaign
+          {loading ? <Loader /> : "Update Campaign"}
         </button>
       </form>
     </div>
