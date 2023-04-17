@@ -27,7 +27,8 @@ const CampaignDetails = () => {
     console.log("Campaign details:", campaign);
   };
 
-  const donateCampaign = async () => {
+  const donateCampaign = async (e) => {
+    e.preventDefault();
     try {
       const donateMethod = contractInstance.methods.donateToCampaign(id);
       console.log("Donate method:", donateMethod);
@@ -36,15 +37,17 @@ const CampaignDetails = () => {
         value: web3.utils.toWei(donation, "ether"),
       });
       console.log(txtObj);
+      getCampaignById();
+      percentageCompleted();
     } catch (error) {
       console.log("Error while donating to campaign:", error.message);
     }
   };
 
   const percentageAmountReceived = () => {
-    const percentage = Math.round(
-      (campaign?.received / campaign?.target) * 100
-    );
+    console.log(`Received:${receivedInEther}`);
+    console.log(`Target:${targetInEther}`);
+    const percentage = Math.round((receivedInEther / targetInEther) * 100);
     console.log("Percentage completed:", percentage);
     setPercentageCompleted(percentage);
   };
@@ -52,7 +55,7 @@ const CampaignDetails = () => {
   useEffect(() => {
     getCampaignById();
     percentageAmountReceived();
-  }, []);
+  }, [receivedInEther, targetInEther, percentageCompleted]);
   return (
     <div className="container mx-auto py-4">
       <h1 className="text-4xl font-bold mb-4">{campaign?.title}</h1>
@@ -68,9 +71,11 @@ const CampaignDetails = () => {
         <strong>End date:</strong> {campaign?.deadline}
       </p>
       <div className="w-80 h-4 border-2 border-solid rounded-lg">
-        <div
-          className={`rounded-lg w-[${percentageCompleted}%] bg-green-600 height`}
-        ></div>
+        {percentageCompleted >= 0 && (
+          <div
+            className={`rounded-lg w-[${percentageCompleted}%] bg-green-600 height`}
+          ></div>
+        )}
       </div>
       <form className="mb-4">
         <div className="mb-4">
