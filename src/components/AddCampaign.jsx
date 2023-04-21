@@ -32,7 +32,7 @@ const AddCampaign = () => {
       const tx = {
         from: accounts[0],
         to: contractInstance.options.address,
-        gas: Math.round(8500000 * 1.2),
+        gas: Math.round(6721975),
         gasPrice: 20000000000,
         data: txtObj.encodeABI(),
       };

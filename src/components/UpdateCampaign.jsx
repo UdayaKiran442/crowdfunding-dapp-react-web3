@@ -7,6 +7,7 @@ import contractInstance from "../utils/contractInstance";
 import AccountsContext from "../context/accounts";
 import getCampaignById from "../utils/getCampaignById";
 import Loader from "./Loader";
+import { etherToWei, weiToEther } from "../utils/ether-wei";
 
 const UpdateCampaign = () => {
   const { accounts } = useContext(AccountsContext);
@@ -22,7 +23,7 @@ const UpdateCampaign = () => {
     setTitle(campaign.title);
     setDescription(campaign.description);
     setImageUrl(campaign.imageUrl);
-    setGoal(campaign.target);
+    setGoal(weiToEther(campaign.target));
     setEndDate(campaign.deadline);
   };
   const handleUpdateCampaign = async (e) => {
@@ -34,7 +35,7 @@ const UpdateCampaign = () => {
         title,
         description,
         imageUrl,
-        goal,
+        etherToWei(goal),
         endDate
       );
       const tx = {
@@ -117,7 +118,7 @@ const UpdateCampaign = () => {
             type="number"
             placeholder="Enter goal"
             value={goal}
-            onClick={(e) => setGoal(e.target.value)}
+            onChange={(e) => setGoal(e.target.value)}
           />
         </div>
         <div className="mb-4">
