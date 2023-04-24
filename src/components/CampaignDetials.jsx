@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
+import Table from "react-bootstrap/Table";
 
 import contractInstance from "../utils/contractInstance";
 import { weiToEther } from "../utils/ether-wei";
@@ -52,6 +53,7 @@ const CampaignDetails = () => {
       console.log(txtObj);
       getCampaignById();
       percentageCompleted();
+      getDonors();
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -75,7 +77,8 @@ const CampaignDetails = () => {
     for (let i = 0; i < data.length; i += 2) {
       const donor = data[i];
       const amount = data[i + 1];
-      res.push({ donor, amount });
+      const amountInEther = weiToEther(amount);
+      res.push({ donor, amount: amountInEther });
     }
     setDonors(res);
     console.log("Donors List:", donors);
@@ -135,12 +138,28 @@ const CampaignDetails = () => {
               Donate
             </button>
           </form>
-          {donors?.map((donor) => (
-            <div>
-              <h1>{donor.donor}</h1>
-              <p>{donor.amount}</p>
-            </div>
-          ))}
+          <div>
+            <Table striped bordered hover responsive="md">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Address</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {donors?.map((donor, index) => (
+                  <>
+                    <tr key={index}>
+                      <td>{index}</td>
+                      <td>{donor.donor}</td>
+                      <td>{donor.amount} Ethers</td>
+                    </tr>
+                  </>
+                ))}
+              </tbody>
+            </Table>
+          </div>
         </div>
       )}
     </>
