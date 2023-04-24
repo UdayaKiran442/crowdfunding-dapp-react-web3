@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import contractInstance from "../utils/contractInstance";
 import { weiToEther } from "../utils/ether-wei";
 import web3 from "../utils/web3";
+import getDonorsList from "../utils/getDonorsListForCampaign";
 
 import AccountsContext from "../context/accounts";
 
@@ -15,6 +16,7 @@ const CampaignDetails = () => {
   const [percentageCompleted, setPercentageCompleted] = useState();
   const [targetInEther, setTargetInEther] = useState();
   const [receivedInEther, setReceivedInEther] = useState();
+  const [donors, setDonors] = useState();
   const [loading, setLoading] = useState(false);
   const { accounts } = useContext(AccountsContext);
   const { id } = useParams();
@@ -65,9 +67,23 @@ const CampaignDetails = () => {
     setPercentageCompleted(percentage);
   };
 
+  const getDonors = async () => {
+    const donorsList = await getDonorsList(id);
+    const input = `${donorsList}`;
+    const data = input.split(",");
+    const res = [];
+    for (let i = 0; i < data.length; i += 2) {
+      const donor = data[i];
+      const amount = data[i + 1];
+      res.push({ donor, amount });
+    }
+    setDonors(res);
+    console.log("Donors List:", donors);
+  };
   useEffect(() => {
     getCampaignById();
     percentageAmountReceived();
+    getDonors();
   }, [receivedInEther, targetInEther, percentageCompleted]);
   return (
     <>
@@ -119,6 +135,12 @@ const CampaignDetails = () => {
               Donate
             </button>
           </form>
+          {donors?.map((donor) => (
+            <div>
+              <h1>{donor.donor}</h1>
+              <p>{donor.amount}</p>
+            </div>
+          ))}
         </div>
       )}
     </>
