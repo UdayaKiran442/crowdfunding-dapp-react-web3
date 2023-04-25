@@ -17,7 +17,7 @@ const CampaignDetails = () => {
   const [percentageCompleted, setPercentageCompleted] = useState();
   const [targetInEther, setTargetInEther] = useState();
   const [receivedInEther, setReceivedInEther] = useState();
-  const [donors, setDonors] = useState();
+  const [donors, setDonors] = useState([{ donor: "", amount: Number }]);
   const [loading, setLoading] = useState(false);
   const { accounts } = useContext(AccountsContext);
   const { id } = useParams();
@@ -73,12 +73,23 @@ const CampaignDetails = () => {
     const donorsList = await getDonorsList(id);
     const input = `${donorsList}`;
     const data = input.split(",");
-    const res = [];
+    let res = [{ donor: "", amount: 0 }];
     for (let i = 0; i < data.length; i += 2) {
       const donor = data[i];
-      const amount = data[i + 1];
-      const amountInEther = weiToEther(amount);
-      res.push({ donor, amount: amountInEther });
+      const amount = Number(data[i + 1]);
+      const amountInEther = Number(
+        web3.utils.fromWei(amount.toString(), "ether")
+      );
+      const index = res.findIndex((r) => r.donor === donor);
+      if (index === -1) {
+        res.push({ donor, amount: amountInEther });
+      } else {
+        const arr = [
+          ...res,
+          (res[index].amount = res[index].amount + amountInEther),
+        ];
+        res = arr;
+      }
     }
     setDonors(res);
     console.log("Donors List:", donors);
