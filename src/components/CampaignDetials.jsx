@@ -14,6 +14,7 @@ import Loader from "./Loader";
 const CampaignDetails = () => {
   const [campaign, setCampaign] = useState();
   const [donation, setDonation] = useState();
+  const [image, setImage] = useState("");
   const [percentageCompleted, setPercentageCompleted] = useState();
   const [targetInEther, setTargetInEther] = useState();
   const [receivedInEther, setReceivedInEther] = useState();
@@ -33,6 +34,8 @@ const CampaignDetails = () => {
       setReceivedInEther(receivedAmount);
       setCampaign(campaign);
       console.log("Campaign details:", campaign);
+      setImage(`https://ipfs.io/ipfs/${campaign?.imageUrl}`);
+      console.log("Image", image);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -106,7 +109,8 @@ const CampaignDetails = () => {
       ) : (
         <div className="container mx-auto py-4">
           <h1 className="text-4xl font-bold mb-4">{campaign?.title}</h1>
-          <p className="text-gray-700 mb-4"></p>
+          <p className="text-gray-700 mb-4">{campaign?.description}</p>
+          <img src={image} alt="Campaign" />
           <p className="text-gray-700 mb-2">
             <strong>Goal:</strong>
             {targetInEther} Ether

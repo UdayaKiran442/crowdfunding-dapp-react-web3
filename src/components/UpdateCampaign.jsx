@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import web3 from "../utils/web3";
+import ipfs from "../utils/ipfs";
 import contractInstance from "../utils/contractInstance";
 import getCampaignById from "../utils/getCampaignById";
 import { etherToWei, weiToEther } from "../utils/ether-wei";
@@ -59,9 +60,11 @@ const UpdateCampaign = () => {
     const file = e.target.files[0];
     const fileReader = new FileReader();
     fileReader.readAsDataURL(file);
-    fileReader.onload = () => {
+    fileReader.onload = async () => {
       if (fileReader.readyState === 2) {
-        setImageUrl(fileReader.result);
+        const ipfsHash = await ipfs.add(fileReader.result);
+        console.log("IPFS hash:", ipfsHash);
+        setImageUrl(ipfsHash.cid.toString());
       }
     };
   };
