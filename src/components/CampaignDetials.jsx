@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
+import { BsWhatsapp } from "react-icons/bs";
 import Table from "react-bootstrap/Table";
 import axios from "axios";
 
-import contractInstance from "../utils/contractInstance";
-import { weiToEther } from "../utils/ether-wei";
 import web3 from "../utils/web3";
 import getDonorsList from "../utils/getDonorsListForCampaign";
+import contractInstance from "../utils/contractInstance";
+import calculateDaysLeft from "../utils/daysLeft";
+import { weiToEther } from "../utils/ether-wei";
 
 import AccountsContext from "../context/accounts";
 
@@ -15,6 +17,7 @@ import Loader from "./Loader";
 const CampaignDetails = () => {
   const [campaign, setCampaign] = useState();
   const [donation, setDonation] = useState();
+  const [daysLeft, setDaysLeft] = useState();
   const [image, setImage] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [percentageCompleted, setPercentageCompleted] = useState();
@@ -36,6 +39,8 @@ const CampaignDetails = () => {
       setReceivedInEther(receivedAmount);
       setCampaign(campaign);
       console.log("Campaign details:", campaign);
+      const days = calculateDaysLeft(campaign?.deadline);
+      setDaysLeft(days);
       setImage(`https://ipfs.io/ipfs/${campaign?.imageUrl}`);
       console.log("Image", image);
       const data = await axios.get(
@@ -115,26 +120,53 @@ const CampaignDetails = () => {
         <Loader />
       ) : (
         <div className="container mx-auto py-4">
-          <h1 className="text-4xl font-bold mb-4">{campaign?.title}</h1>
-          <p className="text-gray-700 mb-4">{campaign?.description}</p>
-          <img src={imageUrl} alt="Campaign" />
-          <p className="text-gray-700 mb-2">
-            <strong>Goal:</strong>
-            {targetInEther} Ether
-          </p>
-          <p className="text-gray-700 mb-2">
-            <strong>Current amount:</strong> {receivedInEther} Ether
-          </p>
-          <p className="text-gray-700 mb-2">
-            <strong>End date:</strong> {campaign?.deadline}
-          </p>
-          <div className="w-80 h-4 border-2 border-solid rounded-lg">
-            {percentageCompleted >= 0 && (
-              <div
-                className={`rounded-lg w-[${percentageCompleted}%] bg-green-600 height`}
-              ></div>
-            )}
+          <h1 className="text-4xl font-bold mb-4 text-center">
+            {campaign?.title}
+          </h1>
+          <div className="">
+            <h1 className="text-2xl font-semibold">About fundraiser</h1>
+            <p className="text-gray-700 mb-4 text-[18px]">
+              {campaign?.description}
+            </p>
           </div>
+          <div className="flex gap-5">
+            <div className="image">
+              <img src={imageUrl} alt="Campaign" width={300} height={50} />
+            </div>
+            <div className="campaign">
+              <p className="text-gray-700 mb-2 font-extrabold text-4xl">
+                {/* <strong>Current amount:</strong>  */}
+                {receivedInEther} Ethers <br />
+              </p>
+              <p className="text-gray-700 mb-2">
+                {/* <strong>Goal:</strong> */}
+                raised of {targetInEther} Ethers
+              </p>
+
+              <p className="text-gray-700 mb-2">
+                <strong>End date:</strong> {campaign?.deadline}
+              </p>
+              <div className="w-80 h-4 border-2 border-solid rounded-lg">
+                {percentageCompleted >= 0 && (
+                  <div
+                    className={`rounded-lg w-[${percentageCompleted}%] bg-green-600 height`}
+                  ></div>
+                )}
+                <div className="flex">
+                  <p className="text-sm">
+                    <span className="text-4xl">{daysLeft}</span> days left
+                  </p>
+                </div>
+              </div>
+              <div className="share mt-16">
+                <button className="bg-green-400 text-white py-2 px-7 flex justify-center items-center gap-2">
+                  <BsWhatsapp />
+                  Spread the word
+                </button>
+              </div>
+            </div>
+          </div>
+
           <form className="mb-4">
             <div className="mb-4">
               <label
