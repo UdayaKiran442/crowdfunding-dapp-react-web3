@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useParams } from "react-router-dom";
-import { BsWhatsapp } from "react-icons/bs";
 import Table from "react-bootstrap/Table";
 import axios from "axios";
+import { useParams } from "react-router-dom";
+import { BsWhatsapp } from "react-icons/bs";
+import { WhatsappShareButton } from "react-share";
 
 import web3 from "../utils/web3";
 import getDonorsList from "../utils/getDonorsListForCampaign";
@@ -159,10 +160,16 @@ const CampaignDetails = () => {
                 </div>
               </div>
               <div className="share mt-16">
-                <button className="bg-green-400 text-white py-2 px-7 flex justify-center items-center gap-2">
-                  <BsWhatsapp />
-                  Spread the word
-                </button>
+                <WhatsappShareButton
+                  url={`http://localhost:3000/${id}`}
+                  title={campaign?.title}
+                  separator=" "
+                >
+                  <button className="bg-green-400 text-white py-2 px-7 flex justify-center items-center gap-2">
+                    <BsWhatsapp />
+                    Spread the word
+                  </button>
+                </WhatsappShareButton>
               </div>
             </div>
           </div>
