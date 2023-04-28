@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import Table from "react-bootstrap/Table";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { BsWhatsapp } from "react-icons/bs";
 import { WhatsappShareButton } from "react-share";
 
@@ -213,7 +213,14 @@ const CampaignDetails = () => {
                   <>
                     <tr key={index}>
                       <td>{index}</td>
-                      <td>{donor.donor}</td>
+                      <td>
+                        <Link
+                          className="no-underline"
+                          to={`/donor/${donor.donor}`}
+                        >
+                          {donor.donor}
+                        </Link>
+                      </td>
                       <td>{donor.amount} Ethers</td>
                     </tr>
                   </>

@@ -6,6 +6,7 @@ import AddCampaign from "./components/AddCampaign";
 import AllCampaigns from "./components/AllCampaigns";
 import UpdateCampaign from "./components/UpdateCampaign";
 import CampaignDetails from "./components/CampaignDetials";
+import DonorHistory from "./components/DonorHistory";
 
 import getAccounts from "./utils/getAccounts";
 import connectToMetamask from "./utils/connect-metamask";
@@ -31,6 +32,7 @@ function App() {
           <Route path="/add" element={<AddCampaign />} />
           <Route path="/update/:id" element={<UpdateCampaign />} />
           <Route path="/:id" element={<CampaignDetails />} />
+          <Route path="/donor/:donor" element={<DonorHistory />} />
         </Routes>
       </AccountsContext.Provider>
     </div>
