@@ -43,11 +43,9 @@ const CampaignDetails = () => {
       const days = calculateDaysLeft(campaign?.deadline);
       setDaysLeft(days);
       setImage(`https://ipfs.io/ipfs/${campaign?.imageUrl}`);
-      console.log("Image", image);
       const data = await axios.get(
         `https://ipfs.io/ipfs/${campaign?.imageUrl}`
       );
-      console.log("Fetch data", data.data);
       setImageUrl(data.data);
       setLoading(false);
     } catch (error) {
@@ -89,26 +87,22 @@ const CampaignDetails = () => {
     const donorsList = await getDonorsList(id);
     const input = `${donorsList}`;
     const data = input.split(",");
-    let res = [{ donor: "", amount: 0 }];
+    console.log("data", data);
+    const res = [];
     for (let i = 0; i < data.length; i += 2) {
       const donor = data[i];
       const amount = Number(data[i + 1]);
-      const amountInEther = Number(
-        web3.utils.fromWei(amount.toString(), "ether")
-      );
+      const amountInEther = Number(weiToEther(amount.toString()));
       const index = res.findIndex((r) => r.donor === donor);
+      console.log("Index", index);
       if (index === -1) {
         res.push({ donor, amount: amountInEther });
       } else {
-        const arr = [
-          ...res,
-          (res[index].amount = res[index].amount + amountInEther),
-        ];
-        res = arr;
+        res[index].amount += amountInEther;
       }
     }
+    console.log("Res:", res);
     setDonors(res);
-    console.log("Donors List:", donors);
   };
   useEffect(() => {
     getCampaignById();
@@ -211,17 +205,17 @@ const CampaignDetails = () => {
             <Table striped bordered hover responsive="md">
               <thead>
                 <tr>
-                  <th>#</th>
-                  <th>Address</th>
-                  <th>Amount</th>
+                  <th className="text-center">#</th>
+                  <th className="text-center">Address</th>
+                  <th className="text-center">Amount</th>
                 </tr>
               </thead>
               <tbody>
                 {donors?.map((donor, index) => (
                   <>
                     <tr key={index}>
-                      <td>{index}</td>
-                      <td>
+                      <td className="text-center">{index}</td>
+                      <td className="text-center">
                         <Link
                           className="no-underline"
                           to={`/donor/${donor.donor}`}
@@ -229,7 +223,7 @@ const CampaignDetails = () => {
                           {donor.donor}
                         </Link>
                       </td>
-                      <td>{donor.amount} Ethers</td>
+                      <td className="text-center">{donor.amount} Ethers</td>
                     </tr>
                   </>
                 ))}
