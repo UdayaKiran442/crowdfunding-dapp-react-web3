@@ -173,33 +173,41 @@ const CampaignDetails = () => {
               </div>
             </div>
           </div>
-
-          <form className="mb-4">
-            <div className="mb-4">
-              <label
-                className="block text-gray-700 font-bold mb-2"
-                htmlFor="donationAmount"
+          {accounts[0] !== campaign?.receipientAddress ? (
+            <form className="mb-4">
+              <div className="mb-4">
+                <label
+                  className="block text-gray-700 font-bold mb-2"
+                  htmlFor="donationAmount"
+                >
+                  Donation amount
+                </label>
+                <input
+                  className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="donationAmount"
+                  type="number"
+                  placeholder="Enter donation amount in ether"
+                  value={donation}
+                  onChange={(e) => setDonation(e.target.value)}
+                  required
+                />
+              </div>
+              <button
+                onClick={donateCampaign}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               >
-                Donation amount
-              </label>
-              <input
-                className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="donationAmount"
-                type="number"
-                placeholder="Enter donation amount in ether"
-                value={donation}
-                onChange={(e) => setDonation(e.target.value)}
-                required
-              />
-            </div>
-            <button
-              onClick={donateCampaign}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            >
-              Donate
-            </button>
-          </form>
-          <div>
+                Donate
+              </button>
+            </form>
+          ) : (
+            <Link to={`/update/${campaign?.id}`}>
+              <button className="bg-blue-500 mt-6 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Update Campaign
+              </button>
+            </Link>
+          )}
+
+          <div className="mt-6">
             <Table striped bordered hover responsive="md">
               <thead>
                 <tr>
