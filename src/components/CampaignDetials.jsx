@@ -21,7 +21,7 @@ const CampaignDetails = () => {
   const [daysLeft, setDaysLeft] = useState();
   const [image, setImage] = useState("");
   const [imageUrl, setImageUrl] = useState("");
-  const [percentageCompleted, setPercentageCompleted] = useState();
+  const [percentageCompleted, setPercentageCompleted] = useState(Number);
   const [targetInEther, setTargetInEther] = useState();
   const [receivedInEther, setReceivedInEther] = useState();
   const [donors, setDonors] = useState([{ donor: "", amount: Number }]);
@@ -47,6 +47,7 @@ const CampaignDetails = () => {
         `https://ipfs.io/ipfs/${campaign?.imageUrl}`
       );
       setImageUrl(data.data);
+      percentageAmountReceived();
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -80,7 +81,7 @@ const CampaignDetails = () => {
     console.log(`Target:${targetInEther}`);
     const percentage = Math.round((receivedInEther / targetInEther) * 100);
     console.log("Percentage completed:", percentage);
-    setPercentageCompleted(percentage);
+    percentage && setPercentageCompleted(percentage);
   };
 
   const getDonors = async () => {
@@ -106,7 +107,6 @@ const CampaignDetails = () => {
   };
   useEffect(() => {
     getCampaignById();
-    percentageAmountReceived();
     getDonors();
   }, [receivedInEther, targetInEther, percentageCompleted]);
   return (
@@ -141,18 +141,33 @@ const CampaignDetails = () => {
               <p className="text-gray-700 mb-2">
                 <strong>End date:</strong> {campaign?.deadline}
               </p>
-              <div className="w-80 h-4 border-2 border-solid rounded-lg">
-                {percentageCompleted >= 0 && (
+              {/* <div className="w-80 h-4 border-2 border-solid rounded-lg"> */}
+              {/* {percentageCompleted >= 0 && (
                   <div
-                    className={`rounded-lg w-[${percentageCompleted}%] bg-green-600 height`}
+                    style={{ width: `${percentageCompleted} !important` }}
+                    className={`rounded-lg bg-green-600 height`}
                   ></div>
-                )}
-                <div className="flex">
+                )} */}
+              {/* </div> */}
+              <div className="flex mt-6">
+                <p className="text-sm">
+                  <span className="text-4xl">{daysLeft}</span> days left
+                </p>
+              </div>
+              <div className="flex mt-6">
+                <p className="text-sm">
+                  <span className="text-4xl">{percentageCompleted}</span> %
+                  completed
+                </p>
+              </div>
+              {campaign?.completed && (
+                <div className="flex mt-6">
                   <p className="text-sm">
-                    <span className="text-4xl">{daysLeft}</span> days left
+                    <span className="text-4xl">Campaign Closed</span>
                   </p>
                 </div>
-              </div>
+              )}
+
               <div className="share mt-16">
                 <WhatsappShareButton
                   url={`http://localhost:3000/${id}`}
@@ -168,31 +183,35 @@ const CampaignDetails = () => {
             </div>
           </div>
           {accounts[0] !== campaign?.receipientAddress ? (
-            <form className="mb-4">
-              <div className="mb-4">
-                <label
-                  className="block text-gray-700 font-bold mb-2"
-                  htmlFor="donationAmount"
-                >
-                  Donation amount
-                </label>
-                <input
-                  className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="donationAmount"
-                  type="number"
-                  placeholder="Enter donation amount in ether"
-                  value={donation}
-                  onChange={(e) => setDonation(e.target.value)}
-                  required
-                />
-              </div>
-              <button
-                onClick={donateCampaign}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              >
-                Donate
-              </button>
-            </form>
+            <>
+              {!campaign?.completed && (
+                <form className="mb-4">
+                  <div className="mb-4">
+                    <label
+                      className="block text-gray-700 font-bold mb-2"
+                      htmlFor="donationAmount"
+                    >
+                      Donation amount
+                    </label>
+                    <input
+                      className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      id="donationAmount"
+                      type="number"
+                      placeholder="Enter donation amount in ether"
+                      value={donation}
+                      onChange={(e) => setDonation(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <button
+                    onClick={donateCampaign}
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                  >
+                    Donate
+                  </button>
+                </form>
+              )}
+            </>
           ) : (
             <Link to={`/update/${campaign?.id}`}>
               <button className="bg-blue-500 mt-6 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
