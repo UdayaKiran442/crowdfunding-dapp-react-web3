@@ -21,23 +21,21 @@ const AddCampaign = () => {
     try {
       const goalInWei = etherToWei(goal);
       console.log("Goal in wei:", goalInWei);
-      const txtObj = contractInstance.methods.addCampaigns(
+      const addCampaignMethod = await contractInstance.methods.addCampaigns(
         title,
         description,
         imageUrl,
-        goal,
+        goalInWei,
         endDate
       );
-
       const tx = {
         from: accounts[0],
         to: contractInstance.options.address,
-        gas: Math.round(6721975),
-        gasPrice: 20000000000,
-        data: txtObj.encodeABI(),
+        gas: 3000000,
+        data: addCampaignMethod.encodeABI(),
       };
-      const result = await web3.eth.sendTransaction(tx);
-      console.log("Result:", result);
+      const response = await web3.eth.sendTransaction(tx);
+      console.log("Add campaign:", response);
     } catch (error) {
       console.log("Error while adding a campaign:", error.message);
     }

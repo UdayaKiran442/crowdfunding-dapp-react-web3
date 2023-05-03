@@ -52,11 +52,13 @@ const Campaign = ({ campaign }) => {
         <strong>Days left:</strong>{" "}
         {remainingDays >= 0 ? remainingDays : "Campaign deadline completed"}
       </p>
-      <Link to={`/${campaign.id}`}>
-        <p className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-          View Details
-        </p>
-      </Link>
+      {remainingDays >= 0 && (
+        <Link to={`/${campaign.id}`}>
+          <p className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            View Details
+          </p>
+        </Link>
+      )}
     </div>
   );
 };
